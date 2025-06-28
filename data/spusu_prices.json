@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-06-28T19:14:22.430114",
+  "timestamp": "2025-06-28T19:14:53.296273",
   "source_url": "https://www.spusu.ch/de/tariffs",
   "plans": [
     {
@@ -8,7 +8,7 @@
       "data_allowance": "20GB",
       "minutes": "100",
       "sms": "100",
-      "scraped_at": "2025-06-28T19:14:22.430091"
+      "scraped_at": "2025-06-28T19:14:53.296263"
     }
   ],
   "total_plans": 1,
