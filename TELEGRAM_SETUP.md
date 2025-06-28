@@ -34,6 +34,38 @@ This guide explains how to set up Telegram notifications for Spusu price changes
 3. **Visit the getUpdates URL** (same as above)
 4. **Find the group chat ID** - it will be negative (e.g., `-123456789`)
 
+### Option C: Public Channel/Group (Bot-Only Posting)
+
+For a **public channel or group where only the bot can post**:
+
+1. **Create a new Telegram channel or group:**
+
+   - Open Telegram and create a new channel (for broadcast-only) or group
+   - Make it **public** and set a username (e.g., `@spusu_price_alerts`)
+   - Add a description like "Spusu mobile plan price monitoring alerts"
+
+2. **Add your bot as an administrator:**
+
+   - Go to channel/group settings → Administrators
+   - Add your bot by searching for its username
+   - **For channels**: Give the bot "Post Messages" permission
+   - **For groups**: Give the bot "Delete Messages" and "Pin Messages" permissions, and consider restricting other members' posting rights
+
+3. **Restrict member posting (for groups only):**
+
+   - Go to group settings → Permissions
+   - Turn off "Send Messages" for members
+   - This ensures only administrators (including your bot) can post
+
+4. **Get the channel/group ID:**
+
+   - Send a message to the channel/group (you can delete it later)
+   - Visit the getUpdates URL: `https://api.telegram.org/botYOUR_BOT_TOKEN/getUpdates`
+   - Find the chat ID - it will be negative (e.g., `-100123456789` for supergroups/channels)
+
+5. **Test the setup:**
+   - Use the curl command below to test if the bot can post
+
 ## Step 3: Configure GitHub Secrets
 
 1. **Go to your GitHub repository**
@@ -85,7 +117,9 @@ When price changes are detected, you'll receive a Telegram message like:
 
 - For personal chats: positive number (e.g., `123456789`)
 - For group chats: negative number (e.g., `-123456789`)
-- Make sure you've sent at least one message to the bot/group
+- For channels/supergroups: negative number starting with `-100` (e.g., `-100123456789`)
+- Make sure you've sent at least one message to the bot/group/channel
+- For channels: ensure the bot has admin rights with "Post Messages" permission
 
 ### No Notifications
 
