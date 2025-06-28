@@ -137,33 +137,75 @@ def generate_telegram_message(price_changes_file):
 
     # Process price changes
     if changes:
-        message += "### 📈 *Price Increases*\n\n"
+        # Separate increases and decreases
+        increases = [c for c in changes if c["new_price"] > c["old_price"]]
+        decreases = [c for c in changes if c["new_price"] < c["old_price"]]
 
-        for change in changes:
-            plan_details = get_plan_details(change["plan_name"], current_data)
+        # Handle price increases
+        if increases:
+            message += "### 📈 *Price Increases*\n\n"
 
-            # Calculate percentage for warning
-            percentage_match = re.search(r"\(([+-][0-9.]+)%\)", change["change_str"])
-            warning = ""
-            if percentage_match:
-                percentage = abs(float(percentage_match.group(1)))
-                if percentage > 20:
-                    warning = " ⚠️ *Significant increase*"
+            for change in increases:
+                plan_details = get_plan_details(change["plan_name"], current_data)
 
-            message += f"*🔴 {change['plan_name']}*\n"
-            message += f"• *Price:* CHF {change['old_price']:.2f} → *CHF {change['new_price']:.2f}* (+CHF {change['new_price'] - change['old_price']:.2f})\n"
-            message += f"• *Increase:* {change['change_str']}{warning}\n"
+                # Calculate percentage for warning
+                percentage_match = re.search(
+                    r"\(([+-][0-9.]+)%\)", change["change_str"]
+                )
+                warning = ""
+                if percentage_match:
+                    percentage = abs(float(percentage_match.group(1)))
+                    if percentage > 20:
+                        warning = " ⚠️ *Significant increase*"
 
-            if plan_details:
-                message += f"• *Features:* {format_plan_features(plan_details)}\n"
-                message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
-            else:
-                message += "• *Features:* Mobile plan with data, calls & SMS\n"
-                message += "• *EU Roaming:* Included\n"
+                price_change = change["new_price"] - change["old_price"]
+                message += f"🔴 *{change['plan_name']}*\n"
+                message += f"• *Price:* CHF {change['old_price']:.2f} → *CHF {change['new_price']:.2f}* (+CHF {price_change:.2f})\n"
+                message += f"• *Increase:* {change['change_str']}{warning}\n"
 
-            message += "\n"
+                if plan_details:
+                    message += f"• *Features:* {format_plan_features(plan_details)}\n"
+                    message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
+                else:
+                    message += "• *Features:* Mobile plan with data, calls & SMS\n"
+                    message += "• *EU Roaming:* Included\n"
 
-        message += "---\n\n"
+                message += "\n"
+
+            message += "---\n\n"
+
+        # Handle price decreases
+        if decreases:
+            message += "### 📉 *Price Decreases*\n\n"
+
+            for change in decreases:
+                plan_details = get_plan_details(change["plan_name"], current_data)
+
+                # Calculate percentage for significant decrease
+                percentage_match = re.search(
+                    r"\(([+-][0-9.]+)%\)", change["change_str"]
+                )
+                warning = ""
+                if percentage_match:
+                    percentage = abs(float(percentage_match.group(1)))
+                    if percentage > 20:
+                        warning = " 🎉 *Significant decrease*"
+
+                price_change = abs(change["new_price"] - change["old_price"])
+                message += f"🟢 *{change['plan_name']}*\n"
+                message += f"• *Price:* CHF {change['old_price']:.2f} → *CHF {change['new_price']:.2f}* (-CHF {price_change:.2f})\n"
+                message += f"• *Decrease:* {change['change_str']}{warning}\n"
+
+                if plan_details:
+                    message += f"• *Features:* {format_plan_features(plan_details)}\n"
+                    message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
+                else:
+                    message += "• *Features:* Mobile plan with data, calls & SMS\n"
+                    message += "• *EU Roaming:* Included\n"
+
+                message += "\n"
+
+            message += "---\n\n"
 
     # Process new plans
     if new_plans:
