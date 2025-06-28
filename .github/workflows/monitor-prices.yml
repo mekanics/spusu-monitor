@@ -67,6 +67,23 @@ jobs:
             echo "✅ No price changes detected"
           fi
 
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Commit and push changes
+        run: |
+          git add data/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update Spusu prices - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Send Telegram notification
         if: steps.price_changes.outputs.changes_detected == 'true'
         run: |
@@ -84,20 +101,3 @@ jobs:
             }"
 
           echo "📱 Telegram notification sent!"
-
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Commit and push changes
-        run: |
-          git add data/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Update Spusu prices - $(date '+%Y-%m-%d %H:%M:%S')"
-            git push
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
