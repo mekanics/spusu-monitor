@@ -1,6 +1,6 @@
 # Spusu Price Monitor
 
-> **Note**: This repository has been created for learning purposes to learn how to use GitHub Actions as a workflow and try out automated monitoring.
+> **Note**: This repository has been created for learning purposes to learn how to use GitHub Actions as a workflow and try out automated monitoring. The code was generated with the assistance of AI. 🤖
 
 This project monitors mobile plan prices from [Spusu Switzerland](https://www.spusu.ch/de/tariffs) and tracks price changes over time.
 
