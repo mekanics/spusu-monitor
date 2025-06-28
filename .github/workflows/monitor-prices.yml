@@ -2,8 +2,8 @@ name: Monitor Spusu Prices
 
 on:
   schedule:
-    # Run daily at 1:00 AM UTC (2:00 AM CET/3:00 AM CEST)
-    - cron: '0 1 * * *'
+    # Run daily at 8:00 AM UTC (9:00 AM CET/10:00 AM CEST)
+    - cron: '0 8 * * *'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -30,7 +30,60 @@ jobs:
 
       - name: Run price monitoring
         run: |
-          python monitor_spusu_prices.py
+          python monitor_spusu_prices.py > monitoring_output.txt 2>&1
+          cat monitoring_output.txt
+
+      - name: Check for price changes
+        id: price_changes
+        run: |
+          if grep -q "Price changes detected:" monitoring_output.txt; then
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "📈 Price changes detected!"
+            
+            # Extract price changes from output
+            grep -A 20 "Price changes detected:" monitoring_output.txt > price_changes.txt
+            
+            # Format message for Telegram
+            echo "🚨 *Spusu Price Changes Detected* 🚨" > telegram_message.txt
+            echo "" >> telegram_message.txt
+            echo "📅 Date: $(date '+%Y-%m-%d %H:%M:%S')" >> telegram_message.txt
+            echo "" >> telegram_message.txt
+            
+            # Add price changes to message
+            while IFS= read -r line; do
+              if [[ $line == *"NEW:"* ]]; then
+                echo "✨ $line" >> telegram_message.txt
+              elif [[ $line == *"CHANGE:"* ]]; then
+                echo "📈 $line" >> telegram_message.txt
+              fi
+            done < price_changes.txt
+            
+            echo "" >> telegram_message.txt
+            echo "🔗 [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> telegram_message.txt
+            
+            cat telegram_message.txt
+          else
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "✅ No price changes detected"
+          fi
+
+      - name: Send Telegram notification
+        if: steps.price_changes.outputs.changes_detected == 'true'
+        run: |
+          # Read the formatted message
+          MESSAGE=$(cat telegram_message.txt)
+
+          # Send to Telegram using Bot API
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+              \"text\": \"$MESSAGE\",
+              \"parse_mode\": \"Markdown\",
+              \"disable_web_page_preview\": true
+            }"
+
+          echo "📱 Telegram notification sent!"
 
       - name: Configure Git
         run: |

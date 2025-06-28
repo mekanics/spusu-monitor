@@ -10,6 +10,7 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
 - **Price History**: Maintains a complete history of price changes in `data/price_history.json`
 - **Current Prices**: Stores the latest prices in `data/spusu_prices.json`
 - **Change Detection**: Identifies when prices change and logs the differences
+- **Telegram Notifications**: Sends instant notifications when prices change (optional)
 - **Robust Scraping**: Handles various HTML structures and provides fallback methods
 
 ## Files
@@ -17,9 +18,10 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
 - `monitor_spusu_prices.py` - Main Python script for price monitoring
 - `show_status.py` - Utility script to display current prices and history
 - `requirements.txt` - Python dependencies
-- `.github/workflows/monitor-prices.yml` - GitHub Actions workflow
+- `.github/workflows/monitor-prices.yml` - GitHub Actions workflow with Telegram notifications
 - `data/price_history.json` - Historical price data (one entry per day)
 - `data/spusu_prices.json` - Current price data
+- `TELEGRAM_SETUP.md` - Guide for setting up Telegram notifications
 
 ## Setup
 
@@ -49,8 +51,13 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
    ```
 
 5. **Enable GitHub Actions**
-   - The workflow will automatically run daily at 1:00 AM UTC
+
+   - The workflow will automatically run daily at 8:00 AM UTC
    - You can also trigger it manually from the Actions tab
+
+6. **Set up Telegram notifications (optional)**
+   - Follow the guide in `TELEGRAM_SETUP.md` to receive instant notifications when prices change
+   - Requires creating a Telegram bot and configuring GitHub secrets
 
 ## How it Works
 
