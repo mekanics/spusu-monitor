@@ -13,9 +13,10 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
 ## Files
 
 - `monitor_spusu_prices.py` - Main Python script for price monitoring
+- `show_status.py` - Utility script to display current prices and history
 - `requirements.txt` - Python dependencies
 - `.github/workflows/monitor-prices.yml` - GitHub Actions workflow
-- `data/price_history.json` - Historical price data
+- `data/price_history.json` - Historical price data (one entry per day)
 - `data/spusu_prices.json` - Current price data
 
 ## Setup
@@ -39,7 +40,13 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
    python monitor_spusu_prices.py
    ```
 
-4. **Enable GitHub Actions**
+4. **Check status**
+
+   ```bash
+   python show_status.py
+   ```
+
+5. **Enable GitHub Actions**
    - The workflow will automatically run daily at 8:00 AM UTC
    - You can also trigger it manually from the Actions tab
 

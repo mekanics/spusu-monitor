@@ -383,9 +383,9 @@ class SpusuPriceMonitor:
             print(f"Adding new entry for {today}")
             history.append(current_data)
 
-        # Keep only last 100 entries to prevent file from growing too large
-        if len(history) > 100:
-            history = history[-100:]
+        # Keep only last 2 years of entries to prevent file from growing too large
+        if len(history) > 365 * 2:
+            history = history[-365 * 2 :]
 
         # Save files
         self.save_price_history(history)
