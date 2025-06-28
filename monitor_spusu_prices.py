@@ -362,9 +362,26 @@ class SpusuPriceMonitor:
         else:
             print("No price changes detected")
 
-        # Add current data to history
+        # Add current data to history (only one entry per day)
         current_data["price_changes"] = changes
-        history.append(current_data)
+        today = datetime.now().date().isoformat()
+
+        # Check if there's already an entry for today
+        today_entry_index = -1
+        for i, entry in enumerate(history):
+            entry_date = datetime.fromisoformat(entry["timestamp"]).date().isoformat()
+            if entry_date == today:
+                today_entry_index = i
+                break
+
+        if today_entry_index >= 0:
+            # Update existing entry for today
+            print(f"Updating existing entry for {today}")
+            history[today_entry_index] = current_data
+        else:
+            # Add new entry for today
+            print(f"Adding new entry for {today}")
+            history.append(current_data)
 
         # Keep only last 100 entries to prevent file from growing too large
         if len(history) > 100:
