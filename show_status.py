@@ -45,6 +45,7 @@ def show_status():
                 minutes = plan.get("minutes", "Unknown")
                 sms = plan.get("sms", "Unknown")
                 eu_roaming = plan.get("eu_roaming", "Unknown")
+                eu_roaming_minutes = plan.get("eu_roaming_minutes", "Unknown")
 
                 print(f"💰 {name}")
                 print(f"   Price: CHF {price}")
@@ -52,6 +53,7 @@ def show_status():
                 print(f"   Minutes: {minutes}")
                 print(f"   SMS: {sms}")
                 print(f"   EU Roaming: {eu_roaming}")
+                print(f"   EU Roaming Minutes: {eu_roaming_minutes}")
                 print()
 
         # Show price changes

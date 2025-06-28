@@ -1,5 +1,7 @@
 # Spusu Price Monitor
 
+> **Note**: This repository has been created for learning purposes to learn how to use GitHub Actions as a workflow and try out automated monitoring.
+
 This project monitors mobile plan prices from [Spusu Switzerland](https://www.spusu.ch/de/tariffs) and tracks price changes over time.
 
 ## Features
@@ -47,7 +49,7 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
    ```
 
 5. **Enable GitHub Actions**
-   - The workflow will automatically run daily at 8:00 AM UTC
+   - The workflow will automatically run daily at 1:00 AM UTC
    - You can also trigger it manually from the Actions tab
 
 ## How it Works
@@ -86,26 +88,3 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
 ### Current Prices (`data/spusu_prices.json`)
 
 Contains the most recent price data in the same format as individual history entries.
-
-## Monitoring
-
-The system automatically:
-
-- Runs daily via GitHub Actions
-- Detects price changes
-- Commits updates to the repository
-- Maintains a rolling history of the last 100 monitoring sessions
-
-## Troubleshooting
-
-If the scraper stops working, it might be due to:
-
-1. **Website structure changes** - The HTML structure of the Spusu website may have changed
-2. **Rate limiting** - The website might be blocking automated requests
-3. **Network issues** - Temporary connectivity problems
-
-Check the GitHub Actions logs for detailed error messages.
-
-## Contributing
-
-Feel free to improve the scraping logic or add new features. The scraper is designed to be robust but may need adjustments if the website structure changes significantly.

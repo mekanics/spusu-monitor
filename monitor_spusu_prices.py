@@ -129,6 +129,20 @@ class SpusuPriceMonitor:
                                         if eu_match:
                                             eu_roaming = eu_match.group(1) + "GB EU"
 
+                                        # Extract EU roaming minutes
+                                        eu_minutes_match = re.search(
+                                            r"(\d+(?:\.\d+)?(?:'?\d+)?)\s*Minuten",
+                                            eu_part,
+                                        )
+                                        if eu_minutes_match:
+                                            eu_roaming_minutes = eu_minutes_match.group(
+                                                1
+                                            )
+                                        else:
+                                            eu_roaming_minutes = "Unknown"
+                                    else:
+                                        eu_roaming_minutes = "Unknown"
+
                                 plan = {
                                     "name": name,
                                     "price_chf": float(price),
@@ -136,6 +150,7 @@ class SpusuPriceMonitor:
                                     "minutes": minutes,
                                     "sms": sms,
                                     "eu_roaming": eu_roaming,
+                                    "eu_roaming_minutes": eu_roaming_minutes,
                                     "description": description,
                                     "scraped_at": datetime.now().isoformat(),
                                 }
