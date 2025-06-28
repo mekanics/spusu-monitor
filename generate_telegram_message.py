@@ -120,7 +120,7 @@ def format_eu_roaming(plan):
 
     roaming_info = plan["eu_roaming"]
     if plan.get("eu_roaming_minutes") and plan["eu_roaming_minutes"] != "Unknown":
-        roaming_info += f" + {plan['eu_roaming_minutes']} min/SMS"
+        roaming_info += f" + {plan['eu_roaming_minutes']} min"
 
     return roaming_info
 
@@ -166,9 +166,6 @@ def generate_telegram_message(price_changes_file):
                 if plan_details:
                     message += f"• *Features:* {format_plan_features(plan_details)}\n"
                     message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
-                else:
-                    message += "• *Features:* Mobile plan with data, calls & SMS\n"
-                    message += "• *EU Roaming:* Included\n"
 
                 message += "\n"
 
@@ -199,9 +196,6 @@ def generate_telegram_message(price_changes_file):
                 if plan_details:
                     message += f"• *Features:* {format_plan_features(plan_details)}\n"
                     message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
-                else:
-                    message += "• *Features:* Mobile plan with data, calls & SMS\n"
-                    message += "• *EU Roaming:* Included\n"
 
                 message += "\n"
 
@@ -220,9 +214,6 @@ def generate_telegram_message(price_changes_file):
             if plan_details:
                 message += f"• *Features:* {format_plan_features(plan_details)}\n"
                 message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
-            else:
-                message += "• *Features:* Mobile plan with data, calls & SMS\n"
-                message += "• *EU Roaming:* Included\n"
 
             message += "\n"
 
