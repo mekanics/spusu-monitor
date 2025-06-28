@@ -397,22 +397,35 @@ class SpusuPriceMonitor:
                 today_entry_index = i
                 break
 
+        # Determine if we need to save files
+        should_save = False
+
         if today_entry_index >= 0:
-            # Update existing entry for today
-            print(f"Updating existing entry for {today}")
-            history[today_entry_index] = current_data
+            # There's already an entry for today
+            if changes:
+                # Only update and save if there are changes
+                print(f"Updating existing entry for {today} due to price changes")
+                history[today_entry_index] = current_data
+                should_save = True
+            else:
+                print(f"No changes detected, skipping file update for {today}")
         else:
-            # Add new entry for today
+            # First run for today - always save
             print(f"Adding new entry for {today}")
             history.append(current_data)
+            should_save = True
 
-        # Keep only last 2 years of entries to prevent file from growing too large
-        if len(history) > 365 * 2:
-            history = history[-365 * 2 :]
+        if should_save:
+            # Keep only last 2 years of entries to prevent file from growing too large
+            if len(history) > 365 * 2:
+                history = history[-365 * 2 :]
 
-        # Save files
-        self.save_price_history(history)
-        self.save_current_prices(current_data)
+            # Save files
+            self.save_price_history(history)
+            self.save_current_prices(current_data)
+            print("Files saved successfully")
+        else:
+            print("No file changes needed")
 
         print("Monitoring completed successfully")
 
