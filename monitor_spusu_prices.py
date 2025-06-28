@@ -113,13 +113,21 @@ class SpusuPriceMonitor:
                                         if sms_matches:
                                             sms = sms_matches[0]
 
-                                    # Extract EU roaming info
-                                    eu_matches = re.findall(
-                                        r"(\d+(?:\.\d+)?)\s*GB.*?EU Roaming",
-                                        description,
-                                    )
-                                    if eu_matches:
-                                        eu_roaming = eu_matches[0] + "GB EU"
+                                    # Extract EU roaming info - split by | and find the EU Roaming part
+                                    parts = description.split("|")
+                                    eu_part = None
+                                    for part in parts:
+                                        if "EU Roaming" in part:
+                                            eu_part = part.strip()
+                                            break
+
+                                    if eu_part:
+                                        # Extract the first GB value from the EU Roaming part
+                                        eu_match = re.search(
+                                            r"(\d+(?:\.\d+)?)\s*GB", eu_part
+                                        )
+                                        if eu_match:
+                                            eu_roaming = eu_match.group(1) + "GB EU"
 
                                 plan = {
                                     "name": name,
