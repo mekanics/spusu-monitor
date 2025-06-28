@@ -62,7 +62,7 @@ jobs:
             done < price_changes.txt
             
             echo "" >> telegram_message.txt
-            echo "🔗 [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> telegram_message.txt
+            echo "🔗 [View Current Prices](https://www.spusu.ch/tariffs)" >> telegram_message.txt
             
             cat telegram_message.txt
           else
