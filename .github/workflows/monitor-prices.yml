@@ -46,23 +46,8 @@ jobs:
             # Extract price changes from output
             grep -A 20 "Price changes detected:" monitoring_output.txt > price_changes.txt
             
-            # Format message for Telegram
-            echo "🚨 *Spusu Price Changes Detected* 🚨" > telegram_message.txt
-            echo "" >> telegram_message.txt
-            echo "📅 Date: $(date '+%Y-%m-%d %H:%M:%S')" >> telegram_message.txt
-            echo "" >> telegram_message.txt
-            
-            # Add price changes to message
-            while IFS= read -r line; do
-              if [[ $line == *"NEW:"* ]]; then
-                echo "✨ $line" >> telegram_message.txt
-              elif [[ $line == *"CHANGE:"* ]]; then
-                echo "📈 $line" >> telegram_message.txt
-              fi
-            done < price_changes.txt
-            
-            echo "" >> telegram_message.txt
-            echo "🔗 [View Current Prices](https://www.spusu.ch/tariffs)" >> telegram_message.txt
+            # Generate detailed Telegram message using Python script
+            python3 generate_telegram_message.py price_changes.txt > telegram_message.txt
             
             cat telegram_message.txt
           else
