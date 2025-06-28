@@ -1,0 +1,34 @@
+[
+  {
+    "timestamp": "2025-06-28T19:13:33.811905",
+    "source_url": "https://www.spusu.ch/de/tariffs",
+    "plans": [
+      {
+        "name": "Unknown Plan",
+        "price_chf": 22.9,
+        "data_allowance": "20GB",
+        "minutes": "100",
+        "sms": "100",
+        "scraped_at": "2025-06-28T19:13:33.811897"
+      }
+    ],
+    "total_plans": 1,
+    "price_changes": []
+  },
+  {
+    "timestamp": "2025-06-28T19:14:22.430114",
+    "source_url": "https://www.spusu.ch/de/tariffs",
+    "plans": [
+      {
+        "name": "Unknown Plan",
+        "price_chf": 22.9,
+        "data_allowance": "20GB",
+        "minutes": "100",
+        "sms": "100",
+        "scraped_at": "2025-06-28T19:14:22.430091"
+      }
+    ],
+    "total_plans": 1,
+    "price_changes": []
+  }
+]
