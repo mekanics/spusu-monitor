@@ -13,6 +13,12 @@ This project monitors mobile plan prices from [Spusu Switzerland](https://www.sp
 - **Telegram Notifications**: Sends instant notifications when prices change (optional)
 - **Robust Scraping**: Handles various HTML structures and provides fallback methods
 
+## Telegram Channel
+
+📢 **Join our Telegram channel for price alerts**: [@spusu_price_alerts](https://t.me/spusu_price_alerts)
+
+Get instant notifications whenever Spusu plan prices change!
+
 ## Files
 
 - `monitor_spusu_prices.py` - Main Python script for price monitoring
