@@ -127,7 +127,7 @@ class SpusuPriceMonitor:
                                             r"(\d+(?:\.\d+)?)\s*GB", eu_part
                                         )
                                         if eu_match:
-                                            eu_roaming = eu_match.group(1) + "GB EU"
+                                            eu_roaming = eu_match.group(1) + "GB"
 
                                         # Extract EU roaming minutes
                                         eu_minutes_match = re.search(
