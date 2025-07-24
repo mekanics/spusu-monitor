@@ -1,5 +1,5 @@
 {
-  "timestamp": "2025-07-23T08:04:14.613698",
+  "timestamp": "2025-07-24T08:04:14.047887",
   "source_url": "https://www.spusu.ch/de/tariffs",
   "plans": [
     {
@@ -11,7 +11,7 @@
       "eu_roaming": "20GB",
       "eu_roaming_minutes": "100",
       "description": "unlimitierte GB | unlimitierte Minuten & SMS | 20 GB / 100 Minuten & 100 SMS EU Roaming | CHF 22.90",
-      "scraped_at": "2025-07-23T08:04:14.613468"
+      "scraped_at": "2025-07-24T08:04:14.047660"
     },
     {
       "name": "spusu legendär",
@@ -22,7 +22,7 @@
       "eu_roaming": "10GB",
       "eu_roaming_minutes": "100",
       "description": "unlimitierte GB | unlimitierte Minuten & SMS | 10 GB / 100 Minuten & 100 SMS EU Roaming | CHF 19.90",
-      "scraped_at": "2025-07-23T08:04:14.613485"
+      "scraped_at": "2025-07-24T08:04:14.047677"
     },
     {
       "name": "spusu 1",
@@ -33,7 +33,7 @@
       "eu_roaming": "1GB",
       "eu_roaming_minutes": "Unknown",
       "description": "1 GB | 100 Minuten | 100 SMS | 1 GB EU Roaming | CHF 4.80",
-      "scraped_at": "2025-07-23T08:04:14.613658"
+      "scraped_at": "2025-07-24T08:04:14.047846"
     },
     {
       "name": "spusu 10",
@@ -44,7 +44,7 @@
       "eu_roaming": "3GB",
       "eu_roaming_minutes": "Unknown",
       "description": "10 GB | unlimitierte Minuten & SMS | 3 GB EU Roaming | CHF 9.90",
-      "scraped_at": "2025-07-23T08:04:14.613671"
+      "scraped_at": "2025-07-24T08:04:14.047860"
     },
     {
       "name": "spusu Europa XL",
@@ -55,7 +55,7 @@
       "eu_roaming": "50GB",
       "eu_roaming_minutes": "1'000",
       "description": "unlimitierte GB | unlimitierte Minuten & SMS | 50 GB / 1'000 Minuten & 1'000 SMS EU Roaming | CHF 39.90",
-      "scraped_at": "2025-07-23T08:04:14.613680"
+      "scraped_at": "2025-07-24T08:04:14.047869"
     },
     {
       "name": "spusu 15",
@@ -66,7 +66,7 @@
       "eu_roaming": "3GB",
       "eu_roaming_minutes": "Unknown",
       "description": "15 GB | unlimitierte Minuten & SMS | 3 GB EU Roaming | CHF 12.90",
-      "scraped_at": "2025-07-23T08:04:14.613689"
+      "scraped_at": "2025-07-24T08:04:14.047879"
     },
     {
       "name": "spusu Europa",
@@ -77,7 +77,7 @@
       "eu_roaming": "20GB",
       "eu_roaming_minutes": "500",
       "description": "unlimitierte GB | unlimitierte Minuten & SMS | 20 GB / 500 Minuten & 500 SMS EU Roaming | CHF 29.90",
-      "scraped_at": "2025-07-23T08:04:14.613695"
+      "scraped_at": "2025-07-24T08:04:14.047885"
     }
   ],
   "total_plans": 7,
