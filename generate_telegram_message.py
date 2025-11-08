@@ -159,13 +159,27 @@ def generate_telegram_message(price_changes_file):
                         warning = " ⚠️ *Significant increase*"
 
                 price_change = change["new_price"] - change["old_price"]
-                message += f"🔴 *{change['plan_name']}*\n"
+
+                # Format plan name with URL if available
+                plan_name_display = change["plan_name"]
+                if plan_details and plan_details.get("url"):
+                    plan_url = plan_details["url"]
+                    if not plan_url.startswith("http"):
+                        plan_url = f"https://{plan_url}"
+                    plan_name_display = f"[{change['plan_name']}]({plan_url})"
+
+                message += f"🔴 *{plan_name_display}*\n"
                 message += f"• *Price:* CHF {change['old_price']:.2f} → *CHF {change['new_price']:.2f}* (+CHF {price_change:.2f})\n"
                 message += f"• *Increase:* {change['change_str']}{warning}\n"
 
                 if plan_details:
                     message += f"• *Features:* {format_plan_features(plan_details)}\n"
                     message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
+                    if plan_details.get("url"):
+                        plan_url = plan_details["url"]
+                        if not plan_url.startswith("http"):
+                            plan_url = f"https://{plan_url}"
+                        message += f"• *Link:* {plan_url}\n"
 
                 message += "\n"
 
@@ -189,13 +203,27 @@ def generate_telegram_message(price_changes_file):
                         warning = " 🎉 *Significant decrease*"
 
                 price_change = abs(change["new_price"] - change["old_price"])
-                message += f"🟢 *{change['plan_name']}*\n"
+
+                # Format plan name with URL if available
+                plan_name_display = change["plan_name"]
+                if plan_details and plan_details.get("url"):
+                    plan_url = plan_details["url"]
+                    if not plan_url.startswith("http"):
+                        plan_url = f"https://{plan_url}"
+                    plan_name_display = f"[{change['plan_name']}]({plan_url})"
+
+                message += f"🟢 *{plan_name_display}*\n"
                 message += f"• *Price:* CHF {change['old_price']:.2f} → *CHF {change['new_price']:.2f}* (-CHF {price_change:.2f})\n"
                 message += f"• *Decrease:* {change['change_str']}{warning}\n"
 
                 if plan_details:
                     message += f"• *Features:* {format_plan_features(plan_details)}\n"
                     message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
+                    if plan_details.get("url"):
+                        plan_url = plan_details["url"]
+                        if not plan_url.startswith("http"):
+                            plan_url = f"https://{plan_url}"
+                        message += f"• *Link:* {plan_url}\n"
 
                 message += "\n"
 
@@ -208,12 +236,25 @@ def generate_telegram_message(price_changes_file):
         for new_plan in new_plans:
             plan_details = get_plan_details(new_plan["plan_name"], current_data)
 
-            message += f"*🆕 {new_plan['plan_name']}*\n"
+            # Format plan name with URL if available
+            plan_name_display = new_plan["plan_name"]
+            if plan_details and plan_details.get("url"):
+                plan_url = plan_details["url"]
+                if not plan_url.startswith("http"):
+                    plan_url = f"https://{plan_url}"
+                plan_name_display = f"[{new_plan['plan_name']}]({plan_url})"
+
+            message += f"*🆕 {plan_name_display}*\n"
             message += f"• *Price:* CHF {new_plan['price']:.2f}\n"
 
             if plan_details:
                 message += f"• *Features:* {format_plan_features(plan_details)}\n"
                 message += f"• *EU Roaming:* {format_eu_roaming(plan_details)}\n"
+                if plan_details.get("url"):
+                    plan_url = plan_details["url"]
+                    if not plan_url.startswith("http"):
+                        plan_url = f"https://{plan_url}"
+                    message += f"• *Link:* {plan_url}\n"
 
             message += "\n"
 

@@ -64,6 +64,7 @@ class SpusuPriceMonitor:
                         ):
                             name = product.get("name", "Unknown Plan")
                             description = product.get("description", "")
+                            url = product.get("url", "")
 
                             # Extract price from offers
                             offers = product.get("offers", {})
@@ -152,6 +153,7 @@ class SpusuPriceMonitor:
                                     "eu_roaming": eu_roaming,
                                     "eu_roaming_minutes": eu_roaming_minutes,
                                     "description": description,
+                                    "url": url,
                                     "scraped_at": datetime.now().isoformat(),
                                 }
 
