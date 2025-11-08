@@ -82,13 +82,13 @@ def get_plan_details(plan_name, current_data):
     if not current_data or "plans" not in current_data:
         return None
 
+    # Exact match only (case-insensitive)
     for plan in current_data["plans"]:
-        if (
-            plan_name.lower() in plan["name"].lower()
-            or plan["name"].lower() in plan_name.lower()
-        ):
+        if plan["name"].lower() == plan_name.lower():
             return plan
 
+    # Log warning if plan not found
+    print(f"Warning: Could not find plan details for '{plan_name}'", file=sys.stderr)
     return None
 
 
@@ -132,7 +132,7 @@ def generate_telegram_message(price_changes_file):
 
     # Start building the message
     message = "🚨 *Spusu Price Alert* 🚨\n\n"
-    message += f"📅 *{datetime.now().strftime('%B %d, %Y at %H:%M')}*\n\n"
+    message += f"📅 *{datetime.now().strftime('%B %d, %Y')}*\n\n"
     message += "---\n\n"
 
     # Process price changes
