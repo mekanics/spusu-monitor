@@ -133,7 +133,7 @@ def generate_telegram_message(price_changes_file):
     # Start building the message
     message = "🚨 *Spusu Price Alert* 🚨\n\n"
     message += f"📅 *{datetime.now().strftime('%B %d, %Y')}*\n\n"
-    message += "---\n\n"
+    message += "━━━━━━━━━━━━━━━━━━\n\n"
 
     # Process price changes
     if changes:
@@ -143,7 +143,7 @@ def generate_telegram_message(price_changes_file):
 
         # Handle price increases
         if increases:
-            message += "### 📈 *Price Increases*\n\n"
+            message += "📈 *Price Increases*\n\n"
 
             for change in increases:
                 plan_details = get_plan_details(change["plan_name"], current_data)
@@ -183,11 +183,11 @@ def generate_telegram_message(price_changes_file):
 
                 message += "\n"
 
-            message += "---\n\n"
+            message += "━━━━━━━━━━━━━━━━━━\n\n"
 
         # Handle price decreases
         if decreases:
-            message += "### 📉 *Price Decreases*\n\n"
+            message += "📉 *Price Decreases*\n\n"
 
             for change in decreases:
                 plan_details = get_plan_details(change["plan_name"], current_data)
@@ -227,11 +227,11 @@ def generate_telegram_message(price_changes_file):
 
                 message += "\n"
 
-            message += "---\n\n"
+            message += "━━━━━━━━━━━━━━━━━━\n\n"
 
     # Process new plans
     if new_plans:
-        message += "### ✨ *New Plans Available*\n\n"
+        message += "✨ *New Plans Available*\n\n"
 
         for new_plan in new_plans:
             plan_details = get_plan_details(new_plan["plan_name"], current_data)
@@ -258,7 +258,7 @@ def generate_telegram_message(price_changes_file):
 
             message += "\n"
 
-        message += "---\n\n"
+        message += "━━━━━━━━━━━━━━━━━━\n\n"
 
     message += "🔗 [Compare All Plans](https://www.spusu.ch/tariffs)"
 
