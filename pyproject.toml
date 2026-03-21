@@ -1,0 +1,10 @@
+[project]
+name = "spusu-monitor"
+version = "0.1.0"
+description = "Monitors mobile plan prices from spusu.ch and tracks price changes over time"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.32.0",
+    "beautifulsoup4>=4.13.0",
+    "lxml>=6.0.0",
+]
