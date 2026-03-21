@@ -6,16 +6,15 @@ Monitors mobile plan prices from spusu.ch and tracks price changes over time.
 
 import json
 import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 import os
-import re
 from typing import Dict, List, Any
 
 
 class SpusuPriceMonitor:
     def __init__(self):
         self.base_url = "https://www.spusu.ch/de/tariffs"
+        self.api_url = "https://www.spusu.ch/imoscmsapi/tariffs/mobile"
         self.data_dir = "data"
         self.price_history_file = os.path.join(self.data_dir, "price_history.json")
         self.current_prices_file = os.path.join(self.data_dir, "spusu_prices.json")
@@ -23,237 +22,101 @@ class SpusuPriceMonitor:
         # Ensure data directory exists
         os.makedirs(self.data_dir, exist_ok=True)
 
+    def _parse_plan(self, sale_item: Dict) -> Dict[str, Any]:
+        """Parse a single tariff plan from the IMosCMS API response."""
+        tariff = sale_item.get("tariffModel", {})
+        fees = tariff.get("fees", {})
+        balances = tariff.get("balances", {})
+
+        name = tariff.get("tariffModelName", "Unknown Plan")
+        detail_link = sale_item.get("tariffDetailLink", "")
+        url = f"{self.base_url}/{detail_link}" if detail_link else self.base_url
+
+        # Price: prefer contractFee, fall back to basicFee
+        contract_fee = fees.get("contractFee") or fees.get("basicFee") or {}
+        price = contract_fee.get("amount")
+
+        # Data allowance
+        nat_data = balances.get("nationalData") or {}
+        if nat_data.get("unlimited"):
+            data_allowance = "unlimited"
+        elif nat_data.get("value") is not None:
+            data_allowance = f"{nat_data['value']:.0f}GB"
+        else:
+            data_allowance = "Unknown"
+
+        # Voice / SMS
+        nat_voice = balances.get("nationalVoice") or {}
+        minutes = (
+            "unlimited"
+            if nat_voice.get("unlimited")
+            else str(nat_voice.get("value", "Unknown"))
+        )
+
+        nat_sms = balances.get("nationalSMS") or {}
+        sms = (
+            "unlimited"
+            if nat_sms.get("unlimited")
+            else str(nat_sms.get("value", "Unknown"))
+        )
+
+        # EU roaming data
+        eu_data = balances.get("euRoamingData") or {}
+        if eu_data.get("unlimited"):
+            eu_roaming = "unlimited"
+        elif eu_data.get("value") is not None:
+            eu_roaming = f"{eu_data['value']:.0f}GB"
+        else:
+            eu_roaming = "0GB"
+
+        # EU roaming voice
+        eu_voice = balances.get("euRoamingVoice") or {}
+        if eu_voice.get("unlimited"):
+            eu_roaming_minutes = "unlimited"
+        elif eu_voice.get("value") is not None:
+            eu_roaming_minutes = str(int(eu_voice["value"]))
+        else:
+            eu_roaming_minutes = "Unknown"
+
+        description = tariff.get("balanceAndCostDescription", "")
+
+        return {
+            "name": name,
+            "price_chf": float(price) if price is not None else None,
+            "data_allowance": data_allowance,
+            "minutes": minutes,
+            "sms": sms,
+            "eu_roaming": eu_roaming,
+            "eu_roaming_minutes": eu_roaming_minutes,
+            "description": description,
+            "url": url,
+            "scraped_at": datetime.now().isoformat(),
+        }
+
     def scrape_prices(self) -> Dict[str, Any]:
-        """Scrape current prices from Spusu website"""
+        """Fetch current prices from the Spusu IMosCMS JSON API."""
         try:
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                "Accept": "application/json",
             }
 
-            response = requests.get(self.base_url, headers=headers, timeout=30)
+            response = requests.get(self.api_url, headers=headers, timeout=30)
             response.raise_for_status()
 
-            soup = BeautifulSoup(response.content, "html.parser")
-
+            data = response.json()
             plans = []
 
-            # First, try to find JSON-LD structured data (most reliable method)
-            json_ld_scripts = soup.find_all("script", type="application/ld+json")
-
-            for script in json_ld_scripts:
-                try:
-                    json_data = json.loads(script.string)
-
-                    # Check if it's a graph with products
-                    if isinstance(json_data, dict) and "@graph" in json_data:
-                        products = json_data["@graph"]
-                    elif isinstance(json_data, list):
-                        products = json_data
-                    elif (
-                        isinstance(json_data, dict)
-                        and json_data.get("@type") == "Product"
-                    ):
-                        products = [json_data]
-                    else:
-                        continue
-
-                    for product in products:
-                        if (
-                            isinstance(product, dict)
-                            and product.get("@type") == "Product"
-                        ):
-                            name = product.get("name", "Unknown Plan")
-                            description = product.get("description", "")
-                            url = product.get("url", "")
-
-                            # Extract price from offers
-                            offers = product.get("offers", {})
-                            if isinstance(offers, dict):
-                                price = offers.get("price")
-                            else:
-                                price = None
-
-                            if price is not None:
-                                # Parse description for data allowance, minutes, SMS
-                                data_allowance = "Unknown"
-                                minutes = "Unknown"
-                                sms = "Unknown"
-                                eu_roaming = "Unknown"
-
-                                if description:
-                                    # Extract data allowance
-                                    if "unlimitierte GB" in description:
-                                        data_allowance = "unlimited"
-                                    else:
-                                        data_matches = re.findall(
-                                            r"(\d+)\s*GB", description
-                                        )
-                                        if data_matches:
-                                            data_allowance = data_matches[0] + "GB"
-
-                                    # Extract minutes
-                                    if "unlimitierte Minuten" in description:
-                                        minutes = "unlimited"
-                                    else:
-                                        minutes_matches = re.findall(
-                                            r"(\d+)\s*Minuten", description
-                                        )
-                                        if minutes_matches:
-                                            minutes = minutes_matches[0]
-
-                                    # Extract SMS
-                                    if (
-                                        "unlimitierte" in description
-                                        and "SMS" in description
-                                    ):
-                                        sms = "unlimited"
-                                    else:
-                                        sms_matches = re.findall(
-                                            r"(\d+)\s*SMS", description
-                                        )
-                                        if sms_matches:
-                                            sms = sms_matches[0]
-
-                                    # Extract EU roaming info - split by | and find the EU Roaming part
-                                    parts = description.split("|")
-                                    eu_part = None
-                                    for part in parts:
-                                        if "EU Roaming" in part:
-                                            eu_part = part.strip()
-                                            break
-
-                                    if eu_part:
-                                        # Extract the first GB value from the EU Roaming part
-                                        eu_match = re.search(
-                                            r"(\d+(?:\.\d+)?)\s*GB", eu_part
-                                        )
-                                        if eu_match:
-                                            eu_roaming = eu_match.group(1) + "GB"
-
-                                        # Extract EU roaming minutes
-                                        eu_minutes_match = re.search(
-                                            r"(\d+(?:\.\d+)?(?:'?\d+)?)\s*Minuten",
-                                            eu_part,
-                                        )
-                                        if eu_minutes_match:
-                                            eu_roaming_minutes = eu_minutes_match.group(
-                                                1
-                                            )
-                                        else:
-                                            eu_roaming_minutes = "Unknown"
-                                    else:
-                                        eu_roaming_minutes = "Unknown"
-
-                                plan = {
-                                    "name": name,
-                                    "price_chf": float(price),
-                                    "data_allowance": data_allowance,
-                                    "minutes": minutes,
-                                    "sms": sms,
-                                    "eu_roaming": eu_roaming,
-                                    "eu_roaming_minutes": eu_roaming_minutes,
-                                    "description": description,
-                                    "url": url,
-                                    "scraped_at": datetime.now().isoformat(),
-                                }
-
-                                # Avoid duplicates
-                                if not any(p["name"] == name for p in plans):
-                                    plans.append(plan)
-
-                except json.JSONDecodeError as e:
-                    print(f"Error parsing JSON-LD: {e}")
-                    continue
-                except Exception as e:
-                    print(f"Error processing JSON-LD product: {e}")
-                    continue
-
-            # If no plans found with JSON-LD, fall back to HTML scraping
-            if not plans:
-                print("No plans found with JSON-LD method, trying HTML scraping...")
-
-                # Look for tariff cards or plan containers
-                tariff_containers = soup.find_all(
-                    ["div", "section"],
-                    class_=re.compile(r"tariff|plan|price|card", re.I),
-                )
-
-                if not tariff_containers:
-                    # Fallback: look for any containers with price information
-                    tariff_containers = soup.find_all(
-                        string=re.compile(r"CHF|Fr\.", re.I)
-                    )
-                    tariff_containers = [
-                        elem.parent for elem in tariff_containers if elem.parent
-                    ]
-
-                for container in tariff_containers[
-                    :10
-                ]:  # Limit to first 10 to avoid noise
+            for group in data.get("groups", []):
+                for sale_item in group.get("saleItems", []):
                     try:
-                        # Extract plan name
-                        name_elem = container.find(
-                            ["h1", "h2", "h3", "h4", "strong"],
-                            string=re.compile(r"\w+"),
-                        )
-                        plan_name = (
-                            name_elem.get_text(strip=True)
-                            if name_elem
-                            else "Unknown Plan"
-                        )
-
-                        # Extract price
-                        price_text = container.get_text()
-                        price_matches = re.findall(
-                            r"(?:CHF|Fr\.?)\s*(\d+(?:\.\d{2})?)", price_text, re.I
-                        )
-
-                        if price_matches:
-                            price = float(price_matches[0])
-
-                            # Extract data allowance
-                            data_matches = re.findall(
-                                r"(\d+(?:\.\d+)?)\s*(?:GB|TB)", price_text, re.I
-                            )
-                            data_allowance = (
-                                data_matches[0] + "GB" if data_matches else "Unknown"
-                            )
-
-                            # Extract minutes/SMS info
-                            minutes_matches = re.findall(
-                                r"(\d+|unlimited|unlimitiert)\s*(?:min|minute)",
-                                price_text,
-                                re.I,
-                            )
-                            minutes = (
-                                minutes_matches[0] if minutes_matches else "Unknown"
-                            )
-
-                            sms_matches = re.findall(
-                                r"(\d+|unlimited|unlimitiert)\s*(?:sms)",
-                                price_text,
-                                re.I,
-                            )
-                            sms = sms_matches[0] if sms_matches else "Unknown"
-
-                            plan = {
-                                "name": plan_name,
-                                "price_chf": price,
-                                "data_allowance": data_allowance,
-                                "minutes": minutes,
-                                "sms": sms,
-                                "scraped_at": datetime.now().isoformat(),
-                            }
-
-                            # Avoid duplicates
-                            if not any(
-                                p["name"] == plan_name and p["price_chf"] == price
-                                for p in plans
-                            ):
-                                plans.append(plan)
-
+                        plan = self._parse_plan(sale_item)
+                        if plan["price_chf"] is not None and not any(
+                            p["name"] == plan["name"] for p in plans
+                        ):
+                            plans.append(plan)
                     except Exception as e:
-                        print(f"Error processing container: {e}")
+                        print(f"Error parsing plan: {e}")
                         continue
 
             return {
@@ -264,7 +127,7 @@ class SpusuPriceMonitor:
             }
 
         except requests.RequestException as e:
-            print(f"Error fetching data from {self.base_url}: {e}")
+            print(f"Error fetching data from {self.api_url}: {e}")
             return {
                 "timestamp": datetime.now().isoformat(),
                 "source_url": self.base_url,
@@ -328,16 +191,18 @@ class SpusuPriceMonitor:
                 current_price = current_plan["price_chf"]
 
                 if last_price != current_price:
+                    change_pct = (
+                        ((current_price - last_price) / last_price) * 100
+                        if last_price
+                        else None
+                    )
                     changes.append(
                         {
                             "plan_name": plan_name,
                             "old_price": last_price,
                             "new_price": current_price,
                             "change": current_price - last_price,
-                            "change_percentage": (
-                                (current_price - last_price) / last_price
-                            )
-                            * 100,
+                            "change_percentage": change_pct,
                             "detected_at": datetime.now().isoformat(),
                         }
                     )
