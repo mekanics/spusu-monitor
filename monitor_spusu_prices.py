@@ -36,7 +36,18 @@ class SpusuPriceMonitor:
         contract_fee = fees.get("contractFee") or fees.get("basicFee") or {}
         price = contract_fee.get("amount")
 
-        # Data allowance
+        # Network generation (FIVE_G → "5G", FOUR_G → "4G", etc.)
+        raw_network = tariff.get("highestSupportedMobileNetworkType", "")
+        network_type = (
+            raw_network.replace("_G", "G")
+            .replace("FIVE", "5")
+            .replace("FOUR", "4")
+            .replace("THREE", "3")
+            if raw_network
+            else "Unknown"
+        )
+
+        # Data allowance + overage price
         nat_data = balances.get("nationalData") or {}
         if nat_data.get("unlimited"):
             data_allowance = "unlimited"
@@ -44,6 +55,9 @@ class SpusuPriceMonitor:
             data_allowance = f"{nat_data['value']:.0f}GB"
         else:
             data_allowance = "Unknown"
+
+        ppu = nat_data.get("pricePerExtraUnit") or {}
+        price_per_extra_gb = ppu.get("amount")
 
         # Voice / SMS
         nat_voice = balances.get("nationalVoice") or {}
@@ -78,16 +92,30 @@ class SpusuPriceMonitor:
         else:
             eu_roaming_minutes = "Unknown"
 
+        # EU roaming SMS
+        eu_sms = balances.get("euRoamingSMS") or {}
+        if eu_sms.get("unlimited"):
+            eu_roaming_sms = "unlimited"
+        elif eu_sms.get("value") is not None:
+            eu_roaming_sms = str(int(eu_sms["value"]))
+        else:
+            eu_roaming_sms = "Unknown"
+
         description = tariff.get("balanceAndCostDescription", "")
 
         return {
             "name": name,
             "price_chf": float(price) if price is not None else None,
             "data_allowance": data_allowance,
+            "price_per_extra_gb": (
+                float(price_per_extra_gb) if price_per_extra_gb is not None else None
+            ),
+            "network_type": network_type,
             "minutes": minutes,
             "sms": sms,
             "eu_roaming": eu_roaming,
             "eu_roaming_minutes": eu_roaming_minutes,
+            "eu_roaming_sms": eu_roaming_sms,
             "description": description,
             "url": url,
             "scraped_at": datetime.now().isoformat(),

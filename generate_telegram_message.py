@@ -100,7 +100,10 @@ def format_plan_features(plan):
     if plan.get("data_allowance") == "unlimited":
         features.append("Unlimited data")
     elif plan.get("data_allowance"):
-        features.append(f"{plan['data_allowance']} data")
+        data_str = f"{plan['data_allowance']} data"
+        if plan.get("price_per_extra_gb") is not None:
+            data_str += f" (CHF {plan['price_per_extra_gb']:.2f}/extra GB)"
+        features.append(data_str)
 
     # Minutes and SMS
     if plan.get("minutes") == "unlimited" and plan.get("sms") == "unlimited":
@@ -110,6 +113,10 @@ def format_plan_features(plan):
     elif plan.get("sms") == "unlimited":
         features.append("unlimited SMS")
 
+    # Network generation
+    if plan.get("network_type") and plan["network_type"] != "Unknown":
+        features.append(plan["network_type"])
+
     return ", ".join(features) if features else "Mobile plan"
 
 
@@ -118,9 +125,16 @@ def format_eu_roaming(plan):
     if not plan.get("eu_roaming") or plan["eu_roaming"] == "Unknown":
         return "Included"
 
-    roaming_info = plan["eu_roaming"]
+    roaming_info = plan["eu_roaming"] + " data"
+
+    parts = []
     if plan.get("eu_roaming_minutes") and plan["eu_roaming_minutes"] != "Unknown":
-        roaming_info += f" + {plan['eu_roaming_minutes']} min"
+        parts.append(f"{plan['eu_roaming_minutes']} min")
+    if plan.get("eu_roaming_sms") and plan["eu_roaming_sms"] != "Unknown":
+        parts.append(f"{plan['eu_roaming_sms']} SMS")
+
+    if parts:
+        roaming_info += " + " + " & ".join(parts)
 
     return roaming_info
 
