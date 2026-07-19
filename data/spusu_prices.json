@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-18T10:05:34.682755",
+  "timestamp": "2026-07-19T10:16:50.096861",
   "source_url": "https://www.spusu.ch/de/tariffs",
   "plans": [
     {
@@ -15,7 +15,7 @@
       "eu_roaming_sms": "Unknown",
       "description": "10 GB | 3 GB EU Roaming | CHF 9.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusu10",
-      "scraped_at": "2026-07-18T10:05:34.682707"
+      "scraped_at": "2026-07-19T10:16:50.096799"
     },
     {
       "name": "spusu 1",
@@ -30,7 +30,7 @@
       "eu_roaming_sms": "Unknown",
       "description": "1 GB | 1 GB EU Roaming | CHF 4.80 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusu1",
-      "scraped_at": "2026-07-18T10:05:34.682726"
+      "scraped_at": "2026-07-19T10:16:50.096822"
     },
     {
       "name": "spusu 15",
@@ -45,7 +45,7 @@
       "eu_roaming_sms": "Unknown",
       "description": "15 GB | 3 GB EU Roaming | CHF 12.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusu15",
-      "scraped_at": "2026-07-18T10:05:34.682733"
+      "scraped_at": "2026-07-19T10:16:50.096832"
     },
     {
       "name": "spusu legendär",
@@ -60,7 +60,7 @@
       "eu_roaming_sms": "100",
       "description": "unlimitierte GB | 10 GB/100 Minuten/100 SMS EU Roaming | CHF 19.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusulegendaer",
-      "scraped_at": "2026-07-18T10:05:34.682740"
+      "scraped_at": "2026-07-19T10:16:50.096840"
     },
     {
       "name": "spusu legendär XXL",
@@ -75,7 +75,7 @@
       "eu_roaming_sms": "100",
       "description": "unlimitierte GB | 30 GB/100 Minuten/100 SMS EU Roaming | CHF 22.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusulegendaerxxl",
-      "scraped_at": "2026-07-18T10:05:34.682745"
+      "scraped_at": "2026-07-19T10:16:50.096846"
     },
     {
       "name": "spusu Europa",
@@ -90,7 +90,7 @@
       "eu_roaming_sms": "500",
       "description": "unlimitierte GB | 20 GB/500 Minuten/500 SMS EU Roaming | CHF 29.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusueuropa",
-      "scraped_at": "2026-07-18T10:05:34.682749"
+      "scraped_at": "2026-07-19T10:16:50.096852"
     },
     {
       "name": "spusu Europa XL",
@@ -105,7 +105,7 @@
       "eu_roaming_sms": "1000",
       "description": "unlimitierte GB | 50 GB/1.000 Minuten/1.000 SMS EU Roaming | CHF 39.90 mtl.",
       "url": "https://www.spusu.ch/de/tariffs/spusueuropaxl",
-      "scraped_at": "2026-07-18T10:05:34.682753"
+      "scraped_at": "2026-07-19T10:16:50.096858"
     }
   ],
   "total_plans": 7,
